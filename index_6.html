@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
+<meta name="theme-color" content="#080810">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>MECHUP.BET — Bolão Copa 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --G:#00e676;--AU:#ffd600;--OR:#ff6d00;--VM:#ff1744;--AZ:#448aff;--RX:#7c4dff;
+  --b0:#080810;--b1:#10101e;--b2:#18182a;
+  --bd:rgba(255,255,255,.07);--bd2:rgba(255,255,255,.13);
+  --t1:#eeeef8;--t2:rgba(238,238,248,.52);--t3:rgba(238,238,248,.26);
+  --r:14px;--rs:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{background:var(--b0);color:var(--t1);font-family:"DM Sans",sans-serif;min-height:100vh;overscroll-behavior:none}
+input[type=number]{-moz-appearance:textfield}
+input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none}
+
+/* ── LOGIN ── */
+#loginScreen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:2rem}
+.login-box{width:100%;max-width:360px}
+.login-logo{font-family:"Bebas Neue",sans-serif;font-size:42px;letter-spacing:.1em;color:var(--G);text-align:center;line-height:1}
+.login-sub{text-align:center;font-size:13px;color:var(--t2);margin-top:4px;margin-bottom:2.5rem}
+.login-field{margin-bottom:1rem}
+.login-field label{font-size:11px;color:var(--t2);display:block;margin-bottom:5px;letter-spacing:.05em;text-transform:uppercase;font-weight:600}
+.login-field select,.login-field input{width:100%;background:var(--b1);color:var(--t1);border:1px solid var(--bd2);border-radius:var(--rs);padding:.75rem 1rem;font-size:15px;font-family:"DM Sans",sans-serif;font-weight:500;outline:none;-webkit-appearance:none;appearance:none}
+.login-field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='rgba(238,238,248,0.35)' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .85rem center;padding-right:2.5rem}
+.login-field select:focus,.login-field input:focus{border-color:var(--G)}
+.login-btn{width:100%;padding:.85rem;font-size:15px;font-weight:700;font-family:"DM Sans",sans-serif;background:var(--G);color:#080810;border:none;border-radius:var(--rs);cursor:pointer;margin-top:.5rem;letter-spacing:.03em;transition:.15s}
+.login-btn:hover{background:#00ff88}
+.login-err{font-size:12px;color:var(--VM);text-align:center;margin-top:.75rem;min-height:18px}
+
+/* ── APP ── */
+#appScreen{display:none}
+.sync-bar{font-size:11px;color:var(--t2);text-align:center;padding:.4rem;background:rgba(0,230,118,.05);border-bottom:1px solid var(--bd);display:none}
+.sync-bar.show{display:block}
+.hdr{background:var(--b1);border-bottom:1px solid var(--bd);padding:.85rem 1.1rem .7rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;backdrop-filter:blur(12px)}
+.logo{font-family:"Bebas Neue",sans-serif;font-size:23px;letter-spacing:.08em;color:var(--G);line-height:1}
+.logo small{color:var(--t3);font-size:11px;font-family:"DM Sans",sans-serif;display:block;letter-spacing:0;font-weight:400;margin-top:1px}
+.hdr-right{display:flex;align-items:center;gap:8px}
+.spill{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--t2);background:var(--b2);padding:4px 10px;border-radius:20px;border:1px solid var(--bd)}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--G);flex-shrink:0}
+.dot.off{background:var(--OR)}.dot.sync{background:var(--AU);animation:pulse 1s infinite}
+.logout-btn{font-size:11px;color:var(--t3);border:1px solid var(--bd);background:transparent;border-radius:20px;padding:4px 10px;cursor:pointer;font-family:"DM Sans",sans-serif}
+.logout-btn:hover{color:var(--VM);border-color:var(--VM)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.tabs{display:flex;background:var(--b1);border-bottom:1px solid var(--bd);position:sticky;top:61px;z-index:99}
+.tab{flex:1;padding:.68rem 0;font-size:11px;font-weight:600;color:var(--t3);border:none;background:transparent;cursor:pointer;border-bottom:2px solid transparent;transition:.15s;letter-spacing:.03em;text-transform:uppercase}
+.tab.active{color:var(--G);border-bottom-color:var(--G)}
+.sec{display:none;padding:1rem 1rem 3rem;max-width:500px;margin:0 auto}
+.sec.active{display:block}
+/* RANKING */
+.rklist{display:flex;flex-direction:column;gap:8px}
+.rkcard{background:var(--b1);border:1px solid var(--bd);border-radius:var(--r);padding:.9rem 1.1rem;display:flex;align-items:center;gap:12px}
+.rkcard.p1{border-color:rgba(255,214,0,.35);background:linear-gradient(120deg,var(--b1),rgba(255,214,0,.05))}
+.rkmed{font-size:20px;width:26px;text-align:center;flex-shrink:0}
+.rkav{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:"Bebas Neue",sans-serif;font-size:15px;letter-spacing:.05em;flex-shrink:0}
+.rkinf{flex:1;min-width:0}.rknm{font-size:14px;font-weight:600;color:var(--t1)}
+.rkdt{font-size:11px;color:var(--t2);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rkpts{text-align:right;flex-shrink:0}
+.rkpn{font-family:"Bebas Neue",sans-serif;font-size:32px;color:var(--G);line-height:1}
+.rkpl{font-size:10px;color:var(--t3);letter-spacing:.05em;text-transform:uppercase}
+/* JOGOS */
+.fbar{display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;margin-bottom:.75rem;scrollbar-width:none}
+.fbar::-webkit-scrollbar{display:none}
+.fbtn{flex-shrink:0;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:600;border:1px solid var(--bd2);background:transparent;color:var(--t2);cursor:pointer;white-space:nowrap;transition:.15s}
+.fbtn.on{background:rgba(0,230,118,.12);color:var(--G);border-color:rgba(0,230,118,.3)}
+.jcard{background:var(--b1);border:1px solid var(--bd);border-radius:var(--r);margin-bottom:8px;overflow:hidden}
+.jhd{padding:.35rem .9rem;background:var(--b2);font-size:11px;color:var(--t2);display:flex;justify-content:space-between;align-items:center}
+.fpill{font-size:10px;padding:2px 8px;border-radius:20px;background:rgba(0,230,118,.1);color:var(--G);font-weight:600}
+.fpill.f2{background:rgba(68,138,255,.1);color:var(--AZ)}.fpill.fo{background:rgba(255,109,0,.1);color:var(--OR)}
+.fpill.fq{background:rgba(255,214,0,.1);color:var(--AU)}.fpill.fs{background:rgba(124,77,255,.1);color:var(--RX)}
+.fpill.ff{background:rgba(255,23,68,.1);color:var(--VM)}
+.jbd{padding:.75rem .9rem}
+.jtms{display:flex;align-items:center;justify-content:space-between;gap:6px}
+.jtm{flex:1;font-size:13px;font-weight:600;color:var(--t1)}.jtm.r{text-align:right}
+.jsc{font-family:"Bebas Neue",sans-serif;font-size:26px;color:var(--t1);text-align:center;min-width:64px;letter-spacing:.05em}
+.jsc.vs{font-family:"DM Sans",sans-serif;font-size:13px;color:var(--t3);font-weight:400}
+.jsc.lv{color:var(--VM)}
+.lvbdg{color:var(--VM);font-weight:700;font-size:10px;animation:pulse 1s infinite}
+.pgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:3px;margin-top:.6rem;padding-top:.6rem;border-top:1px solid var(--bd)}
+.prow{display:flex;justify-content:space-between;font-size:11px;color:var(--t2);align-items:center;padding:1px 0}
+.pval{font-weight:600;font-size:11px}
+.ex{color:var(--G)}.wi{color:var(--AZ)}.ms{color:var(--t3)}
+.gsep{font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--t3);text-transform:uppercase;padding:.5rem 0 .25rem;border-top:1px solid var(--bd);margin-top:.4rem}
+.gsep:first-child{border-top:none;margin-top:0;padding-top:0}
+/* PALPITES */
+.user-banner{background:rgba(0,230,118,.07);border:1px solid rgba(0,230,118,.18);border-radius:var(--rs);padding:.6rem .9rem;font-size:13px;color:var(--G);margin-bottom:.9rem;display:flex;align-items:center;gap:8px;font-weight:600}
+.obsbar{background:rgba(255,255,255,.04);border:1px solid var(--bd);border-radius:var(--rs);padding:.5rem .85rem;font-size:12px;color:var(--t2);margin-bottom:.9rem}
+.fsep{font-family:"Bebas Neue",sans-serif;font-size:12px;letter-spacing:.1em;color:var(--G);margin:1rem 0 .5rem;display:flex;align-items:center;gap:8px}
+.fsep.c2{color:var(--AZ)}.fsep.co{color:var(--OR)}.fsep.cq{color:var(--AU)}.fsep.cs{color:var(--RX)}.fsep.cf{color:var(--VM)}
+.fsep::after{content:"";flex:1;height:1px;background:var(--bd)}
+.pcard{background:var(--b1);border:1px solid var(--bd);border-radius:var(--r);padding:.8rem .9rem;margin-bottom:8px;transition:opacity .2s}
+.pcard.blq{opacity:.55}
+.pmtch{display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem;gap:8px}
+.pmtm{font-size:13px;font-weight:600;color:var(--t1);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pmhr{font-size:11px;color:var(--t2);white-space:nowrap;flex-shrink:0}
+.srow{display:flex;align-items:center;gap:8px;justify-content:center;margin-bottom:.6rem}
+.sinp{width:58px;text-align:center;font-size:20px;font-weight:700;font-family:"Bebas Neue",sans-serif;background:var(--b2);color:var(--t1);border:1px solid var(--bd2);border-radius:var(--rs);padding:.4rem 0;outline:none;letter-spacing:.05em}
+.sinp:focus{border-color:var(--G)}.sinp:disabled{opacity:.35;cursor:not-allowed}
+.ssep{font-size:16px;color:var(--t3)}
+.sbtn{width:100%;padding:.5rem;font-size:13px;font-weight:600;font-family:"DM Sans",sans-serif;background:rgba(0,230,118,.1);color:var(--G);border:1px solid rgba(0,230,118,.25);border-radius:var(--rs);cursor:pointer;transition:.15s}
+.sbtn:hover{background:rgba(0,230,118,.2)}
+.sok{font-size:12px;color:var(--G);text-align:center;margin-top:4px;display:none}
+.stag{display:flex;align-items:center;gap:5px;font-size:11px;margin-top:6px;padding:4px 10px;border-radius:20px;justify-content:center;font-weight:500}
+.tab-ab{background:rgba(0,230,118,.08);color:var(--G)}.tab-qt{background:rgba(255,109,0,.1);color:var(--OR)}.tab-fe{background:rgba(255,255,255,.04);color:var(--t3)}
+.cd{font-weight:700}
+/* REGRAS */
+.rcard{background:var(--b1);border:1px solid var(--bd);border-radius:var(--r);overflow:hidden;margin-bottom:.85rem}
+.rrow{display:flex;justify-content:space-between;align-items:center;padding:.7rem 1rem;border-bottom:1px solid var(--bd);font-size:13px}
+.rrow:last-child{border-bottom:none}
+.rfase{color:var(--t1);font-weight:500}.rinfo{color:var(--t2);font-size:12px;text-align:right}
+.rp{font-weight:700}.rp.g{color:var(--G)}.rp.b{color:var(--AZ)}.rp.o{color:var(--OR)}.rp.y{color:var(--AU)}.rp.p{color:var(--RX)}.rp.r{color:var(--VM)}
+.obscard{background:var(--b1);border-left:2px solid var(--OR);border-radius:var(--rs);padding:.65rem .9rem;font-size:12px;color:var(--t2);margin-bottom:8px;line-height:1.55}
+.load{text-align:center;padding:2.5rem;color:var(--t2);font-size:13px}
+.rbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:.85rem}
+.rbar span{font-size:10px;text-transform:uppercase;letter-spacing:.09em;color:var(--t2);font-weight:700}
+.rbtn{font-size:12px;color:var(--t2);border:1px solid var(--bd);background:var(--b1);border-radius:20px;padding:4px 12px;cursor:pointer;font-family:"DM Sans",sans-serif;display:flex;align-items:center;gap:4px;transition:.15s}
+.rbtn:hover{border-color:var(--G);color:var(--G)}
+</style>
+</head>
+<body>
+
+<!-- ── TELA DE LOGIN ── -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">MECHUP.BET</div>
+    <div class="login-sub">Bolão Copa do Mundo 2026</div>
+    <div class="login-field">
+      <label>Participante</label>
+      <select id="loginName">
+        <option value="">Selecione seu nome…</option>
+        <option value="XANDINHO">Xandinho</option>
+        <option value="GILMAR">Gilmar</option>
+        <option value="MARINELLI">Marinelli</option>
+        <option value="PAULINHO">Paulinho</option>
+        <option value="JC">JC</option>
+      </select>
+    </div>
+    <div class="login-field">
+      <label>Senha</label>
+      <input type="password" id="loginPass" placeholder="Digite sua senha" onkeydown="if(event.key==='Enter')fazerLogin()">
+    </div>
+    <button class="login-btn" onclick="fazerLogin()">Entrar</button>
+    <div class="login-err" id="loginErr"></div>
+  </div>
+</div>
+
+<!-- ── APP ── -->
+<div id="appScreen">
+  <div class="sync-bar" id="syncBar">🔄 Sincronizando…</div>
+  <div class="hdr">
+    <div class="logo">MECHUP.BET<small>Copa do Mundo 2026</small></div>
+    <div class="hdr-right">
+      <div class="spill"><span class="dot" id="sDot"></span><span id="sLbl">conectando…</span></div>
+      <button class="logout-btn" onclick="sair()">Sair</button>
+    </div>
+  </div>
+  <div class="tabs">
+    <button class="tab active" onclick="go('ranking')">🏆 Ranking</button>
+    <button class="tab" onclick="go('jogos')">⚽ Jogos</button>
+    <button class="tab" onclick="go('palpites')">✏️ Palpitar</button>
+    <button class="tab" onclick="go('reg')">📋 Regras</button>
+  </div>
+  <div id="t-ranking" class="sec active"><div id="rkEl" class="load">Conectando…</div></div>
+  <div id="t-jogos" class="sec">
+    <div class="rbar"><span>Resultados</span><button class="rbtn" onclick="fetchRes()">↻ Atualizar</button></div>
+    <div class="fbar" id="fbarEl"></div>
+    <div id="jEl"><div class="load">Carregando…</div></div>
+  </div>
+  <div id="t-palpites" class="sec">
+    <div class="user-banner" id="userBanner">👤 …</div>
+    <div class="obsbar">🔒 Apostas encerram automaticamente 30 min antes de cada jogo.</div>
+    <div id="palEl"><div class="load">Carregando…</div></div>
+  </div>
+  <div id="t-reg" class="sec">
+    <div class="rcard">
+      <div class="rrow"><span class="rfase">1ª fase</span><span class="rinfo">Exato <span class="rp g">2pts</span> · Vencedor/Empate <span class="rp g">1pt</span></span></div>
+      <div class="rrow"><span class="rfase">2ª fase (Round of 32)</span><span class="rinfo">Exato <span class="rp b">3pts</span></span></div>
+      <div class="rrow"><span class="rfase">Oitavas de final</span><span class="rinfo">Exato <span class="rp o">4pts</span></span></div>
+      <div class="rrow"><span class="rfase">Quartas de final</span><span class="rinfo">Exato <span class="rp y">5pts</span></span></div>
+      <div class="rrow"><span class="rfase">Semifinal</span><span class="rinfo">Exato <span class="rp p">8pts</span></span></div>
+      <div class="rrow"><span class="rfase">Final</span><span class="rinfo">Exato <span class="rp r">10pts</span></span></div>
+    </div>
+    <div class="obscard">⏱️ Apostas encerram <strong>30 minutos antes</strong> do início de cada partida.</div>
+    <div class="obscard">⚠️ A partir da 2ª fase, vale apenas o resultado do <strong>tempo normal (90 min)</strong>. Prorrogação e pênaltis <strong>não</strong> são considerados.</div>
+    <div class="obscard">👥 Participantes: <strong>Xandinho · Gilmar · Marinelli · Paulinho · JC</strong></div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, doc, setDoc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAfc4jqS7RCzRClCFPNP5sywuKKWp4gg6Y",
+  authDomain: "mechupbet.firebaseapp.com",
+  projectId: "mechupbet",
+  storageBucket: "mechupbet.firebasestorage.app",
+  messagingSenderId: "802215333807",
+  appId: "1:802215333807:web:9d0ff4115b25ce4a47a95a"
+};
+const app = initializeApp(firebaseConfig);
+const db  = getFirestore(app);
+
+// ── SENHAS ────────────────────────────────────────────────────
+const SENHAS = {
+  XANDINHO:"102030", GILMAR:"405060", MARINELLI:"415161",
+  PAULINHO:"302409", JC:"506070"
+};
+
+// ── JOGOS ─────────────────────────────────────────────────────
+const JB=[{"id":1,"data":"11/06","hora":"16:00","t1":"México","t2":"África do Sul","fase":"1ª fase","grupo":"A"},{"id":2,"data":"11/06","hora":"23:00","t1":"Coreia do S.","t2":"Rep. Tcheca","fase":"1ª fase","grupo":"A"},{"id":3,"data":"18/06","hora":"13:00","t1":"México","t2":"Coreia do S.","fase":"1ª fase","grupo":"A"},{"id":4,"data":"18/06","hora":"22:00","t1":"Rep. Tcheca","t2":"África do Sul","fase":"1ª fase","grupo":"A"},{"id":5,"data":"24/06","hora":"22:00","t1":"México","t2":"Rep. Tcheca","fase":"1ª fase","grupo":"A"},{"id":6,"data":"24/06","hora":"22:00","t1":"África do Sul","t2":"Coreia do S.","fase":"1ª fase","grupo":"A"},{"id":7,"data":"12/06","hora":"16:00","t1":"Canadá","t2":"Bósnia","fase":"1ª fase","grupo":"B"},{"id":8,"data":"13/06","hora":"16:00","t1":"Catar","t2":"Suíça","fase":"1ª fase","grupo":"B"},{"id":9,"data":"18/06","hora":"16:00","t1":"Canadá","t2":"Suíça","fase":"1ª fase","grupo":"B"},{"id":10,"data":"18/06","hora":"19:00","t1":"Bósnia","t2":"Catar","fase":"1ª fase","grupo":"B"},{"id":11,"data":"24/06","hora":"16:00","t1":"Canadá","t2":"Catar","fase":"1ª fase","grupo":"B"},{"id":12,"data":"24/06","hora":"16:00","t1":"Suíça","t2":"Bósnia","fase":"1ª fase","grupo":"B"},{"id":13,"data":"13/06","hora":"19:00","t1":"Brasil","t2":"Marrocos","fase":"1ª fase","grupo":"C"},{"id":14,"data":"13/06","hora":"22:00","t1":"Haiti","t2":"Escócia","fase":"1ª fase","grupo":"C"},{"id":15,"data":"19/06","hora":"19:00","t1":"Brasil","t2":"Escócia","fase":"1ª fase","grupo":"C"},{"id":16,"data":"19/06","hora":"21:30","t1":"Marrocos","t2":"Haiti","fase":"1ª fase","grupo":"C"},{"id":17,"data":"24/06","hora":"19:00","t1":"Brasil","t2":"Haiti","fase":"1ª fase","grupo":"C"},{"id":18,"data":"24/06","hora":"19:00","t1":"Escócia","t2":"Marrocos","fase":"1ª fase","grupo":"C"},{"id":19,"data":"12/06","hora":"22:00","t1":"EUA","t2":"Paraguai","fase":"1ª fase","grupo":"D"},{"id":20,"data":"14/06","hora":"01:00","t1":"Austrália","t2":"Turquia","fase":"1ª fase","grupo":"D"},{"id":21,"data":"19/06","hora":"16:00","t1":"EUA","t2":"Turquia","fase":"1ª fase","grupo":"D"},{"id":22,"data":"20/06","hora":"00:00","t1":"Paraguai","t2":"Austrália","fase":"1ª fase","grupo":"D"},{"id":23,"data":"25/06","hora":"23:00","t1":"EUA","t2":"Austrália","fase":"1ª fase","grupo":"D"},{"id":24,"data":"25/06","hora":"23:00","t1":"Turquia","t2":"Paraguai","fase":"1ª fase","grupo":"D"},{"id":25,"data":"14/06","hora":"14:00","t1":"Alemanha","t2":"Curaçao","fase":"1ª fase","grupo":"E"},{"id":26,"data":"14/06","hora":"20:00","t1":"C. do Marfim","t2":"Equador","fase":"1ª fase","grupo":"E"},{"id":27,"data":"20/06","hora":"17:00","t1":"Alemanha","t2":"Equador","fase":"1ª fase","grupo":"E"},{"id":28,"data":"20/06","hora":"21:00","t1":"Curaçao","t2":"C. do Marfim","fase":"1ª fase","grupo":"E"},{"id":29,"data":"25/06","hora":"17:00","t1":"Alemanha","t2":"C. do Marfim","fase":"1ª fase","grupo":"E"},{"id":30,"data":"25/06","hora":"17:00","t1":"Equador","t2":"Curaçao","fase":"1ª fase","grupo":"E"},{"id":31,"data":"14/06","hora":"17:00","t1":"Holanda","t2":"Japão","fase":"1ª fase","grupo":"F"},{"id":32,"data":"14/06","hora":"23:00","t1":"Suécia","t2":"Tunísia","fase":"1ª fase","grupo":"F"},{"id":33,"data":"20/06","hora":"14:00","t1":"Holanda","t2":"Tunísia","fase":"1ª fase","grupo":"F"},{"id":34,"data":"21/06","hora":"01:00","t1":"Japão","t2":"Suécia","fase":"1ª fase","grupo":"F"},{"id":35,"data":"25/06","hora":"20:00","t1":"Holanda","t2":"Suécia","fase":"1ª fase","grupo":"F"},{"id":36,"data":"25/06","hora":"20:00","t1":"Tunísia","t2":"Japão","fase":"1ª fase","grupo":"F"},{"id":37,"data":"15/06","hora":"16:00","t1":"Bélgica","t2":"Egito","fase":"1ª fase","grupo":"G"},{"id":38,"data":"15/06","hora":"22:00","t1":"Irã","t2":"N. Zelândia","fase":"1ª fase","grupo":"G"},{"id":39,"data":"21/06","hora":"16:00","t1":"Bélgica","t2":"N. Zelândia","fase":"1ª fase","grupo":"G"},{"id":40,"data":"21/06","hora":"22:00","t1":"Irã","t2":"Egito","fase":"1ª fase","grupo":"G"},{"id":41,"data":"27/06","hora":"00:00","t1":"Bélgica","t2":"Irã","fase":"1ª fase","grupo":"G"},{"id":42,"data":"27/06","hora":"00:00","t1":"N. Zelândia","t2":"Egito","fase":"1ª fase","grupo":"G"},{"id":43,"data":"15/06","hora":"13:00","t1":"Espanha","t2":"Cabo Verde","fase":"1ª fase","grupo":"H"},{"id":44,"data":"15/06","hora":"19:00","t1":"Arábia Saudita","t2":"Uruguai","fase":"1ª fase","grupo":"H"},{"id":45,"data":"21/06","hora":"13:00","t1":"Espanha","t2":"Arábia Saudita","fase":"1ª fase","grupo":"H"},{"id":46,"data":"21/06","hora":"19:00","t1":"Uruguai","t2":"Cabo Verde","fase":"1ª fase","grupo":"H"},{"id":47,"data":"26/06","hora":"21:00","t1":"Espanha","t2":"Uruguai","fase":"1ª fase","grupo":"H"},{"id":48,"data":"26/06","hora":"21:00","t1":"Cabo Verde","t2":"Arábia Saudita","fase":"1ª fase","grupo":"H"},{"id":49,"data":"16/06","hora":"16:00","t1":"França","t2":"Senegal","fase":"1ª fase","grupo":"I"},{"id":50,"data":"16/06","hora":"19:00","t1":"Iraque","t2":"Noruega","fase":"1ª fase","grupo":"I"},{"id":51,"data":"22/06","hora":"18:00","t1":"França","t2":"Noruega","fase":"1ª fase","grupo":"I"},{"id":52,"data":"22/06","hora":"21:00","t1":"Senegal","t2":"Iraque","fase":"1ª fase","grupo":"I"},{"id":53,"data":"26/06","hora":"16:00","t1":"França","t2":"Iraque","fase":"1ª fase","grupo":"I"},{"id":54,"data":"26/06","hora":"16:00","t1":"Noruega","t2":"Senegal","fase":"1ª fase","grupo":"I"},{"id":55,"data":"16/06","hora":"22:00","t1":"Argentina","t2":"Argélia","fase":"1ª fase","grupo":"J"},{"id":56,"data":"17/06","hora":"01:00","t1":"Áustria","t2":"Jordânia","fase":"1ª fase","grupo":"J"},{"id":57,"data":"22/06","hora":"14:00","t1":"Argentina","t2":"Jordânia","fase":"1ª fase","grupo":"J"},{"id":58,"data":"23/06","hora":"00:00","t1":"Áustria","t2":"Argélia","fase":"1ª fase","grupo":"J"},{"id":59,"data":"27/06","hora":"23:00","t1":"Argentina","t2":"Áustria","fase":"1ª fase","grupo":"J"},{"id":60,"data":"27/06","hora":"23:00","t1":"Jordânia","t2":"Argélia","fase":"1ª fase","grupo":"J"},{"id":61,"data":"17/06","hora":"14:00","t1":"Portugal","t2":"RD. Congo","fase":"1ª fase","grupo":"K"},{"id":62,"data":"17/06","hora":"23:00","t1":"Uzbequistão","t2":"Colômbia","fase":"1ª fase","grupo":"K"},{"id":63,"data":"23/06","hora":"14:00","t1":"Portugal","t2":"Colômbia","fase":"1ª fase","grupo":"K"},{"id":64,"data":"23/06","hora":"23:00","t1":"RD. Congo","t2":"Uzbequistão","fase":"1ª fase","grupo":"K"},{"id":65,"data":"27/06","hora":"20:30","t1":"Portugal","t2":"Uzbequistão","fase":"1ª fase","grupo":"K"},{"id":66,"data":"27/06","hora":"20:30","t1":"Colômbia","t2":"RD. Congo","fase":"1ª fase","grupo":"K"},{"id":67,"data":"17/06","hora":"17:00","t1":"Inglaterra","t2":"Gana","fase":"1ª fase","grupo":"L"},{"id":68,"data":"17/06","hora":"20:00","t1":"Croácia","t2":"Panamá","fase":"1ª fase","grupo":"L"},{"id":69,"data":"23/06","hora":"17:00","t1":"Inglaterra","t2":"Panamá","fase":"1ª fase","grupo":"L"},{"id":70,"data":"23/06","hora":"20:00","t1":"Gana","t2":"Croácia","fase":"1ª fase","grupo":"L"},{"id":71,"data":"27/06","hora":"18:00","t1":"Inglaterra","t2":"Croácia","fase":"1ª fase","grupo":"L"},{"id":72,"data":"27/06","hora":"18:00","t1":"Panamá","t2":"Gana","fase":"1ª fase","grupo":"L"},{"id":73,"data":"28/06","hora":"16:00","t1":"2º Grupo A","t2":"2º Grupo B","fase":"2ª fase"},{"id":74,"data":"29/06","hora":"14:00","t1":"1º Grupo C","t2":"3º C/D/F/G/H","fase":"2ª fase"},{"id":75,"data":"29/06","hora":"17:30","t1":"1º Grupo E","t2":"3º A/B/C/D/F","fase":"2ª fase"},{"id":76,"data":"29/06","hora":"22:00","t1":"1º Grupo F","t2":"2º Grupo C","fase":"2ª fase"},{"id":77,"data":"30/06","hora":"14:00","t1":"2º Grupo E","t2":"2º Grupo I","fase":"2ª fase"},{"id":78,"data":"30/06","hora":"18:00","t1":"1º Grupo I","t2":"3º C/D/F/G/H","fase":"2ª fase"},{"id":79,"data":"30/06","hora":"22:00","t1":"1º Grupo A","t2":"3º C/E/F/H/I","fase":"2ª fase"},{"id":80,"data":"01/07","hora":"13:00","t1":"1º Grupo L","t2":"3º E/H/I/J/K","fase":"2ª fase"},{"id":81,"data":"01/07","hora":"17:00","t1":"1º Grupo G","t2":"3º A/E/H/I/J","fase":"2ª fase"},{"id":82,"data":"01/07","hora":"21:00","t1":"1º Grupo D","t2":"3º B/E/F/I/J","fase":"2ª fase"},{"id":83,"data":"02/07","hora":"16:00","t1":"1º Grupo H","t2":"2º Grupo J","fase":"2ª fase"},{"id":84,"data":"02/07","hora":"20:00","t1":"2º Grupo K","t2":"2º Grupo L","fase":"2ª fase"},{"id":85,"data":"03/07","hora":"00:00","t1":"1º Grupo B","t2":"3º E/F/G/I/J","fase":"2ª fase"},{"id":86,"data":"03/07","hora":"15:00","t1":"2º Grupo D","t2":"2º Grupo G","fase":"2ª fase"},{"id":87,"data":"03/07","hora":"19:00","t1":"1º Grupo J","t2":"2º Grupo H","fase":"2ª fase"},{"id":88,"data":"03/07","hora":"22:30","t1":"1º Grupo K","t2":"3º D/E/I/J/L","fase":"2ª fase"},{"id":89,"data":"04/07","hora":"14:00","t1":"Venc. Jogo 1","t2":"Venc. Jogo 2","fase":"Oitavas"},{"id":90,"data":"04/07","hora":"18:00","t1":"Venc. Jogo 3","t2":"Venc. Jogo 4","fase":"Oitavas"},{"id":91,"data":"05/07","hora":"17:00","t1":"Venc. Jogo 5","t2":"Venc. Jogo 6","fase":"Oitavas"},{"id":92,"data":"05/07","hora":"21:00","t1":"Venc. Jogo 7","t2":"Venc. Jogo 8","fase":"Oitavas"},{"id":93,"data":"06/07","hora":"16:00","t1":"Venc. Jogo 9","t2":"Venc. Jogo 10","fase":"Oitavas"},{"id":94,"data":"06/07","hora":"21:00","t1":"Venc. Jogo 11","t2":"Venc. Jogo 12","fase":"Oitavas"},{"id":95,"data":"07/07","hora":"13:00","t1":"Venc. Jogo 13","t2":"Venc. Jogo 14","fase":"Oitavas"},{"id":96,"data":"07/07","hora":"17:00","t1":"Venc. Jogo 15","t2":"Venc. Jogo 16","fase":"Oitavas"},{"id":97,"data":"09/07","hora":"17:00","t1":"Venc. Oitavas 1","t2":"Venc. Oitavas 2","fase":"Quartas"},{"id":98,"data":"10/07","hora":"16:00","t1":"Venc. Oitavas 3","t2":"Venc. Oitavas 4","fase":"Quartas"},{"id":99,"data":"11/07","hora":"18:00","t1":"Venc. Oitavas 5","t2":"Venc. Oitavas 6","fase":"Quartas"},{"id":100,"data":"11/07","hora":"22:00","t1":"Venc. Oitavas 7","t2":"Venc. Oitavas 8","fase":"Quartas"},{"id":101,"data":"14/07","hora":"16:00","t1":"Venc. QF 1","t2":"Venc. QF 2","fase":"Semifinal"},{"id":102,"data":"15/07","hora":"16:00","t1":"Venc. QF 3","t2":"Venc. QF 4","fase":"Semifinal"},{"id":103,"data":"18/07","hora":"18:00","t1":"Venc. Semi 1","t2":"Venc. Semi 2","fase":"Final"}];
+
+const PARTS=["XANDINHO","GILMAR","MARINELLI","PAULINHO","JC"];
+const AV={XANDINHO:{bg:"#1a1040",c:"#a78bfa"},GILMAR:{bg:"#0a2010",c:"#4ade80"},MARINELLI:{bg:"#1a0a0a",c:"#f87171"},PAULINHO:{bg:"#0a1020",c:"#60a5fa"},JC:{bg:"#1a1000",c:"#fbbf24"}};
+const PEX={"1ª fase":2,"2ª fase":3,"Oitavas":4,"Quartas":5,"Semifinal":8,"Final":10};
+const FCLS={"1ª fase":"","2ª fase":" f2","Oitavas":" fo","Quartas":" fq","Semifinal":" fs","Final":" ff"};
+const SCLS={"1ª fase":"","2ª fase":" c2","Oitavas":" co","Quartas":" cq","Semifinal":" cs","Final":" cf"};
+
+let pals={}, res={}, cdArr=[], fil="Todos";
+let userLogado = null;
+
+// ── LOGIN ─────────────────────────────────────────────────────
+window.fazerLogin = function(){
+  const nome = document.getElementById("loginName").value;
+  const senha = document.getElementById("loginPass").value;
+  const err = document.getElementById("loginErr");
+  if(!nome){ err.textContent="Selecione seu nome."; return; }
+  if(SENHAS[nome] !== senha){ err.textContent="Senha incorreta. Tente novamente."; return; }
+  userLogado = nome;
+  sessionStorage.setItem("mechup_user", nome);
+  document.getElementById("loginScreen").style.display="none";
+  document.getElementById("appScreen").style.display="block";
+  document.getElementById("userBanner").textContent="👤 " + cap(nome);
+  iniciarListeners();
+  rk(); bfb();
+};
+
+window.sair = function(){
+  sessionStorage.removeItem("mechup_user");
+  userLogado = null;
+  location.reload();
+};
+
+// Restaurar sessão ao recarregar
+const sessao = sessionStorage.getItem("mechup_user");
+if(sessao && SENHAS[sessao]){
+  userLogado = sessao;
+  document.getElementById("loginScreen").style.display="none";
+  document.getElementById("appScreen").style.display="block";
+  document.getElementById("userBanner").textContent="👤 " + cap(sessao);
+  iniciarListeners();
+  rk(); bfb();
+}
+
+// ── FIREBASE LISTENERS ────────────────────────────────────────
+function iniciarListeners(){
+  PARTS.forEach(p=>{
+    onSnapshot(doc(db,"palpites",p),(snap)=>{
+      pals[p] = snap.exists() ? (snap.data().jogos||{}) : {};
+      rk();
+      if(document.getElementById("t-palpites").classList.contains("active")&&userLogado===p) renderPal();
+      if(document.getElementById("t-jogos").classList.contains("active")) rj();
+    });
+  });
+  onSnapshot(doc(db,"config","resultados"),(snap)=>{
+    res = snap.exists() ? (snap.data().jogos||{}) : {};
+    rk(); rj();
+    if(document.getElementById("t-palpites").classList.contains("active")) renderPal();
+    document.getElementById("sDot").className="dot";
+    document.getElementById("sLbl").textContent="ao vivo 🔥";
+  });
+}
+
+// ── SALVAR PALPITE ────────────────────────────────────────────
+async function salvarFirebase(id, g1, g2){
+  document.getElementById("syncBar").classList.add("show");
+  try{
+    const ref = doc(db,"palpites",userLogado);
+    const snap = await getDoc(ref);
+    const jogos = snap.exists() ? (snap.data().jogos||{}) : {};
+    jogos[id] = {g1,g2};
+    await setDoc(ref,{jogos},{merge:true});
+  }catch(e){ alert("Erro ao salvar. Verifique a conexão."); }
+  document.getElementById("syncBar").classList.remove("show");
+}
+
+// ── BUSCAR RESULTADOS ─────────────────────────────────────────
+window.fetchRes = async function(){
+  document.getElementById("jEl").innerHTML='<div class="load">↻ Buscando resultados…</div>';
+  document.getElementById("sDot").className="dot sync";
+  document.getElementById("sLbl").textContent="buscando…";
+  try{
+    const r=await fetch("https://api.anthropic.com/v1/messages",{
+      method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:3000,
+        tools:[{"type":"web_search_20250305","name":"web_search"}],
+        messages:[{role:"user",content:"Copa do Mundo FIFA 2026: busque os resultados de todos os jogos já disputados e ao vivo.\nResponda SOMENTE JSON sem markdown:\n{\"resultados\":[{\"id\":N,\"g1\":N,\"g2\":N,\"status\":\"finalizado|ao_vivo\"}],\"ts\":\"HH:MM DD/MM\"}\nInclua apenas jogos finalizados ou ao vivo. IDs de 1 a 103."}]})
+    });
+    const d=await r.json();
+    const tx=d.content.filter(b=>b.type==="text").map(b=>b.text).join("");
+    const p=JSON.parse(tx.replace(/```json|```/g,"").trim());
+    if(p.resultados){
+      const jogos={};
+      p.resultados.forEach(x=>{jogos[x.id]={g1:x.g1,g2:x.g2,status:x.status}});
+      await setDoc(doc(db,"config","resultados"),{jogos,ts:p.ts||""},{merge:false});
+      document.getElementById("sLbl").textContent=p.ts||"agora";
+    }
+    document.getElementById("sDot").className="dot";
+  }catch(e){
+    document.getElementById("sDot").className="dot off";
+    document.getElementById("sLbl").textContent="erro";
+    rj();
+  }
+};
+
+// ── HELPERS ───────────────────────────────────────────────────
+function tsJ(j){try{const[d,m]=j.data.split("/").map(Number),[h,mi]=j.hora.split(":").map(Number);return Date.UTC(2026,m-1,d,h,mi,0)}catch(e){return 0}}
+function ji(j){const r=res[j.id]||{};return{...j,g1:r.g1??null,g2:r.g2??null,status:r.status||"agendado"}}
+function ku(j){try{const[d,m]=j.data.split("/").map(Number),[h,mi]=j.hora.split(":").map(Number);return Date.UTC(2026,m-1,d,h+3,mi,0)}catch(e){return null}}
+function bloq(j){if(j.status==="finalizado"||j.status==="ao_vivo")return true;const k=ku(j);return k?Date.now()>=(k-30*60*1000):false;}
+function mtb(j){const k=ku(j);return k?(k-30*60*1000)-Date.now():null}
+function pts(fase,pg1,pg2,rg1,rg2){if(pg1===rg1&&pg2===rg2)return PEX[fase]||2;if(fase==="1ª fase"){const v=x=>x>0?1:x<0?-1:0;if(v(pg1-pg2)===v(rg1-rg2))return 1;}return 0;}
+function cap(s){return s.charAt(0)+s.slice(1).toLowerCase()}
+function fpill(f){return`<span class="fpill${FCLS[f]||""}">${f}</span>`}
+
+// ── TABS ──────────────────────────────────────────────────────
+window.go=function(t){
+  document.querySelectorAll(".tab").forEach(b=>b.classList.remove("active"));
+  document.querySelectorAll(".sec").forEach(s=>s.classList.remove("active"));
+  ["ranking","jogos","palpites","reg"].forEach((n,i)=>{
+    if(n===t){document.querySelectorAll(".tab")[i].classList.add("active");document.getElementById("t-"+n).classList.add("active");}
+  });
+  if(t==="jogos"){bfb();rj();}
+  if(t==="palpites")renderPal();
+  if(t==="ranking")rk();
+};
+
+// ── RANKING ───────────────────────────────────────────────────
+function rk(){
+  const sc=PARTS.map(p=>{
+    let pt=0,ex=0,wi=0;
+    JB.forEach(j=>{
+      const r2=res[j.id];if(!r2||r2.status!=="finalizado")return;
+      const pal=(pals[p]||{})[j.id];if(pal==null)return;
+      const p2=pts(j.fase,pal.g1,pal.g2,r2.g1,r2.g2);
+      pt+=p2;if(p2===(PEX[j.fase]||2))ex++;else if(p2>0)wi++;
+    });
+    const np=Object.keys(pals[p]||{}).length;
+    return{name:p,pt,ex,wi,np};
+  }).sort((a,b)=>b.pt-a.pt);
+  let h='<div class="rklist">';
+  sc.forEach((s,i)=>{
+    const med=i===0?"🥇":i===1?"🥈":i===2?"🥉":`${i+1}º`;
+    const av=AV[s.name]||{bg:"#111",c:"#666"};
+    const dt=[s.ex?`${s.ex} exato${s.ex>1?"s":""}`:null,s.wi?`${s.wi} venc.`:null,`${s.np} palpite${s.np!==1?"s":""}`].filter(Boolean).join(" · ");
+    h+=`<div class="rkcard${i===0?" p1":""}"><span class="rkmed">${med}</span><div class="rkav" style="background:${av.bg};color:${av.c}">${s.name.slice(0,2)}</div><div class="rkinf"><div class="rknm">${cap(s.name)}</div><div class="rkdt">${dt}</div></div><div class="rkpts"><div class="rkpn">${s.pt}</div><div class="rkpl">PTS</div></div></div>`;
+  });
+  h+='</div>';
+  document.getElementById("rkEl").innerHTML=h;
+}
+
+// ── FILTRO / JOGOS ────────────────────────────────────────────
+function bfb(){
+  const ops=["Todos","1ª fase","2ª fase","Oitavas","Quartas","Semifinal","Final"];
+  document.getElementById("fbarEl").innerHTML=ops.map(f=>`<button class="fbtn${f===fil?" on":""}" onclick="window.sf('${f}')">${f}</button>`).join("");
+}
+window.sf=function(f){fil=f;bfb();rj();}
+
+function rj(){
+  const lista=JB.filter(j=>fil==="Todos"||j.fase===fil).map(ji);
+  if(!lista.length){document.getElementById("jEl").innerHTML='<div class="load">Nenhum jogo.</div>';return;}
+  let h="",lg="";
+  lista.forEach(j=>{
+    const sep=j.grupo?"Grupo "+j.grupo:j.fase;
+    if(sep!==lg){h+=`<div class="gsep">${sep}</div>`;lg=sep;}
+    const fin=j.status==="finalizado",lv=j.status==="ao_vivo";
+    const sc=fin?`<div class="jsc">${j.g1} – ${j.g2}</div>`:lv?`<div class="jsc lv">${j.g1??0}–${j.g2??0}</div>`:'<div class="jsc vs">vs</div>';
+    let pg="";
+    if(fin){
+      pg='<div class="pgrid">';
+      PARTS.forEach(p=>{
+        const pal=(pals[p]||{})[j.id];
+        if(pal!=null){const p2=pts(j.fase,pal.g1,pal.g2,j.g1,j.g2);const cl=p2===(PEX[j.fase]||2)?"ex":p2>0?"wi":"ms";pg+=`<div class="prow"><span>${cap(p)}</span><span class="pval ${cl}">${pal.g1}-${pal.g2} (${p2}pt)</span></div>`;}
+      });
+      pg+='</div>';
+    }
+    h+=`<div class="jcard"><div class="jhd"><span>${j.data} ${j.hora}${lv?' <span class="lvbdg">● AO VIVO</span>':''}</span>${fpill(j.fase)}</div><div class="jbd"><div class="jtms"><span class="jtm">${j.t1}</span>${sc}<span class="jtm r">${j.t2}</span></div>${pg}</div></div>`;
+  });
+  document.getElementById("jEl").innerHTML=h;
+}
+
+// ── PALPITES (só do usuário logado) ──────────────────────────
+function renderPal(){
+  if(!userLogado) return;
+  cdArr.forEach(clearInterval);cdArr=[];
+  const JBS=[...JB].sort((a,b)=>tsJ(a)-tsJ(b));
+  let h="",lf="";
+  JBS.forEach(j=>{
+    const jx=ji(j);const bl=bloq(jx);
+    const pal=(pals[userLogado]||{})[j.id]||{g1:"",g2:""};
+    if(j.fase!==lf){
+      const sc2=SCLS[j.fase]||"";const ei=PEX[j.fase]||2;const wi2=j.fase==="1ª fase"?" · venc/emp +1pt":"";
+      h+=`<div class="fsep${sc2}">${j.fase} — exato ${ei}pt${wi2}</div>`;lf=j.fase;
+    }
+    const fin=jx.status==="finalizado";
+    const stag=fin?'<div class="stag tab-fe">🔒 Jogo encerrado</div>':bl?'<div class="stag tab-fe">🔒 Apostas encerradas</div>':`<div class="stag tab-ab" id="tg_${j.id}">🟢 Aberto · fecha em <span class="cd" id="cd_${j.id}">--:--</span></div>`;
+    h+=`<div class="pcard${bl?" blq":""}" id="pc_${j.id}">
+<div class="pmtch"><span class="pmtm">${j.t1} × ${j.t2}</span><span class="pmhr">${j.data} ${j.hora}</span></div>
+<div class="srow"><input type="number" class="sinp" id="i1_${j.id}" min="0" max="20" value="${pal.g1}" placeholder="0" ${bl?"disabled":""}><span class="ssep">–</span><input type="number" class="sinp" id="i2_${j.id}" min="0" max="20" value="${pal.g2}" placeholder="0" ${bl?"disabled":""}></div>
+${!bl?`<button class="sbtn" id="bt_${j.id}" onclick="window.salvar(${j.id})">Salvar palpite</button><div class="sok" id="ok_${j.id}">✓ Salvo!</div>`:""}
+${stag}</div>`;
+  });
+  document.getElementById("palEl").innerHTML=h;
+  JBS.forEach(j=>{
+    const jx=ji(j);if(bloq(jx))return;
+    const tick=()=>{
+      const df=mtb(jx);const cdel=document.getElementById("cd_"+j.id);const tgel=document.getElementById("tg_"+j.id);
+      if(!cdel)return;if(df===null){cdel.textContent="--:--";return;}
+      if(df<=0){
+        const pc=document.getElementById("pc_"+j.id);if(pc)pc.classList.add("blq");
+        const a=document.getElementById("i1_"+j.id),b=document.getElementById("i2_"+j.id),bt=document.getElementById("bt_"+j.id);
+        if(a)a.disabled=true;if(b)b.disabled=true;if(bt)bt.remove();
+        if(tgel)tgel.outerHTML='<div class="stag tab-fe">🔒 Apostas encerradas</div>';return;
+      }
+      if(df<3600000&&tgel&&tgel.classList.contains("tab-ab")){tgel.classList.replace("tab-ab","tab-qt");tgel.innerHTML=`⚠️ Fecha em <span class="cd" id="cd_${j.id}">--:--</span>`;}
+      const c2=document.getElementById("cd_"+j.id);if(!c2)return;
+      const tot=Math.floor(df/1000),hh=Math.floor(tot/3600),mm=Math.floor((tot%3600)/60),ss=tot%60;
+      c2.textContent=hh>0?`${hh}h${String(mm).padStart(2,"0")}m`:`${String(mm).padStart(2,"0")}:${String(ss).padStart(2,"0")}`;
+    };
+    tick();cdArr.push(setInterval(tick,1000));
+  });
+}
+
+window.salvar=async function(id){
+  if(!userLogado) return;
+  const jx=ji(JB.find(j=>j.id===id));if(bloq(jx))return;
+  const g1=parseInt(document.getElementById("i1_"+id).value);
+  const g2=parseInt(document.getElementById("i2_"+id).value);
+  if(isNaN(g1)||isNaN(g2))return;
+  await salvarFirebase(id,g1,g2);
+  const ok=document.getElementById("ok_"+id);
+  if(ok){ok.style.display="block";setTimeout(()=>ok.style.display="none",2000);}
+};
+
+</script>
+</body>
+</html>
