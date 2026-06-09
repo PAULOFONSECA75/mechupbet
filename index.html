@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0a0a0f">
+<title>MECHUO.BET — Bolão Copa 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --verde: #00e676;
+  --verde-escuro: #00b248;
+  --ouro: #ffd600;
+  --laranja: #ff6d00;
+  --vermelho: #ff1744;
+  --azul: #2979ff;
+  --bg: #0a0a0f;
+  --bg2: #13131c;
+  --bg3: #1c1c2a;
+  --borda: rgba(255,255,255,0.08);
+  --borda2: rgba(255,255,255,0.14);
+  --txt: #f0f0f8;
+  --txt2: rgba(240,240,248,0.55);
+  --txt3: rgba(240,240,248,0.3);
+  --radius: 14px;
+  --radius-sm: 8px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: var(--bg); color: var(--txt); font-family: 'DM Sans', sans-serif; min-height: 100vh; }
+
+/* HEADER */
+.header {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--borda);
+  padding: 1rem 1.25rem 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 26px;
+  letter-spacing: 0.06em;
+  color: var(--verde);
+  line-height: 1;
+}
+.logo span { color: var(--txt2); font-size: 13px; font-family: 'DM Sans', sans-serif; display: block; letter-spacing: 0; font-weight: 400; margin-top: 2px; }
+.status-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--txt2);
+  background: var(--bg3);
+  padding: 5px 10px;
+  border-radius: 20px;
+  border: 1px solid var(--borda);
+}
+.dot { width: 6px; height: 6px; border-radius: 50%; background: var(--verde); }
+.dot.warn { background: var(--laranja); }
+
+/* TABS */
+.tabs {
+  display: flex;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--borda);
+  position: sticky;
+  top: 72px;
+  z-index: 99;
+}
+.tab {
+  flex: 1;
+  padding: 0.75rem 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--txt3);
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+  letter-spacing: 0.02em;
+}
+.tab.active { color: var(--verde); border-bottom-color: var(--verde); }
+
+/* SECTIONS */
+.section { display: none; padding: 1.25rem; max-width: 480px; margin: 0 auto; }
+.section.active { display: block; }
+
+/* RANKING */
+.ranking-list { display: flex; flex-direction: column; gap: 10px; }
+.rank-card {
+  background: var(--bg2);
+  border: 1px solid var(--borda);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  transition: border-color 0.2s;
+}
+.rank-card.primeiro { border-color: rgba(255,214,0,0.4); background: linear-gradient(135deg, var(--bg2) 0%, rgba(255,214,0,0.06) 100%); }
+.rank-medal { font-size: 22px; width: 28px; text-align: center; }
+.rank-avatar {
+  width: 40px; height: 40px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 600; flex-shrink: 0;
+  font-family: 'Bebas Neue', sans-serif; font-size: 16px; letter-spacing: 0.05em;
+}
+.rank-info { flex: 1; }
+.rank-name { font-size: 15px; font-weight: 600; color: var(--txt); }
+.rank-detail { font-size: 11px; color: var(--txt2); margin-top: 2px; }
+.rank-pts { text-align: right; }
+.rank-pts-num { font-family: 'Bebas Neue', sans-serif; font-size: 30px; color: var(--verde); line-height: 1; }
+.rank-pts-label { font-size: 10px; color: var(--txt3); letter-spacing: 0.05em; text-transform: uppercase; }
+
+/* JOGOS */
+.jogo-card {
+  background: var(--bg2);
+  border: 1px solid var(--borda);
+  border-radius: var(--radius);
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+.jogo-head {
+  padding: 0.45rem 1rem;
+  background: var(--bg3);
+  font-size: 11px;
+  color: var(--txt2);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.fase-pill {
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 20px;
+  background: rgba(0,230,118,0.12);
+  color: var(--verde);
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+.jogo-body { padding: 0.85rem 1rem; }
+.jogo-teams {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.jogo-time { flex: 1; font-size: 14px; font-weight: 600; color: var(--txt); }
+.jogo-time.right { text-align: right; }
+.jogo-score {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28px;
+  color: var(--txt);
+  text-align: center;
+  min-width: 70px;
+  letter-spacing: 0.05em;
+}
+.jogo-score.vs { font-size: 14px; color: var(--txt3); font-family: 'DM Sans', sans-serif; }
+.jogo-score.live-score { color: var(--vermelho); }
+.live-badge { color: var(--vermelho); font-weight: 700; font-size: 10px; animation: pulse 1s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+.pals-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  gap: 4px;
+  margin-top: 0.65rem;
+  padding-top: 0.65rem;
+  border-top: 1px solid var(--borda);
+}
+.pal-row { display: flex; justify-content: space-between; font-size: 11px; color: var(--txt2); align-items: center; }
+.pal-score { font-weight: 600; font-size: 12px; }
+.pal-exact { color: var(--verde); }
+.pal-winner { color: var(--azul); }
+.pal-miss { color: var(--txt3); }
+
+/* PALPITES */
+.obs-strip {
+  background: rgba(0,230,118,0.08);
+  border: 1px solid rgba(0,230,118,0.2);
+  border-radius: var(--radius-sm);
+  padding: 0.6rem 0.85rem;
+  font-size: 12px;
+  color: var(--verde);
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.input-group { margin-bottom: 1rem; }
+.input-group label { font-size: 12px; color: var(--txt2); display: block; margin-bottom: 5px; letter-spacing: 0.03em; text-transform: uppercase; }
+select {
+  width: 100%;
+  background: var(--bg2);
+  color: var(--txt);
+  border: 1px solid var(--borda2);
+  border-radius: var(--radius-sm);
+  padding: 0.6rem 0.85rem;
+  font-size: 14px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 500;
+  outline: none;
+}
+select:focus { border-color: var(--verde); }
+
+.fase-sep {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  color: var(--verde);
+  margin: 1.25rem 0 0.65rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.fase-sep::after { content: ''; flex: 1; height: 1px; background: var(--borda); }
+
+.pal-card {
+  background: var(--bg2);
+  border: 1px solid var(--borda);
+  border-radius: var(--radius);
+  padding: 0.85rem 1rem;
+  margin-bottom: 10px;
+  transition: opacity 0.2s;
+}
+.pal-card.bloqueado { opacity: 0.55; }
+.pal-match {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.65rem;
+}
+.pal-match-time { font-size: 13px; font-weight: 600; color: var(--txt); }
+.pal-match-hora { font-size: 11px; color: var(--txt2); }
+.score-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 0.65rem;
+}
+.score-inp {
+  width: 62px;
+  text-align: center;
+  font-size: 22px;
+  font-weight: 600;
+  font-family: 'Bebas Neue', sans-serif;
+  background: var(--bg3);
+  color: var(--txt);
+  border: 1px solid var(--borda2);
+  border-radius: var(--radius-sm);
+  padding: 0.4rem 0;
+  outline: none;
+  letter-spacing: 0.05em;
+}
+.score-inp:focus { border-color: var(--verde); }
+.score-inp:disabled { opacity: 0.4; cursor: not-allowed; }
+.score-sep { font-size: 18px; color: var(--txt3); }
+.salvar-btn {
+  width: 100%;
+  padding: 0.55rem;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: 'DM Sans', sans-serif;
+  background: rgba(0,230,118,0.12);
+  color: var(--verde);
+  border: 1px solid rgba(0,230,118,0.3);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  letter-spacing: 0.02em;
+  transition: background 0.15s;
+}
+.salvar-btn:hover { background: rgba(0,230,118,0.22); }
+.saved-ok { font-size: 12px; color: var(--verde); text-align: center; margin-top: 5px; display: none; }
+
+.status-tag {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  margin-top: 6px;
+  padding: 5px 10px;
+  border-radius: 20px;
+  justify-content: center;
+  font-weight: 500;
+}
+.tag-aberto { background: rgba(0,230,118,0.1); color: var(--verde); }
+.tag-quase { background: rgba(255,109,0,0.12); color: var(--laranja); }
+.tag-fechado { background: rgba(255,255,255,0.05); color: var(--txt3); }
+.countdown { font-weight: 700; }
+
+/* REGRAS */
+.reg-card {
+  background: var(--bg2);
+  border: 1px solid var(--borda);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+.reg-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1.1rem;
+  border-bottom: 1px solid var(--borda);
+  font-size: 13px;
+}
+.reg-row:last-child { border-bottom: none; }
+.reg-fase { color: var(--txt); font-weight: 500; }
+.reg-info { color: var(--txt2); font-size: 12px; text-align: right; }
+.reg-pts { color: var(--verde); font-weight: 700; }
+.obs-card {
+  background: var(--bg2);
+  border-left: 3px solid var(--laranja);
+  border-radius: var(--radius-sm);
+  padding: 0.75rem 1rem;
+  font-size: 12px;
+  color: var(--txt2);
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+
+/* MISC */
+.loading { text-align: center; padding: 2.5rem; color: var(--txt2); font-size: 13px; }
+.refresh-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+.refresh-row span { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--txt2); font-weight: 600; }
+.refresh-btn {
+  font-size: 12px; color: var(--txt2); border: 1px solid var(--borda); background: var(--bg2);
+  border-radius: 20px; padding: 4px 12px; cursor: pointer; font-family: 'DM Sans', sans-serif;
+  display: flex; align-items: center; gap: 5px; transition: border-color 0.15s;
+}
+.refresh-btn:hover { border-color: var(--verde); color: var(--verde); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">MECHUO.BET<span>Copa do Mundo 2026</span></div>
+  <div class="status-pill"><span class="dot" id="statusDot"></span><span id="lastUpdate">...</span></div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="showTab('ranking')">🏆 Ranking</button>
+  <button class="tab" onclick="showTab('jogos')">⚽ Jogos</button>
+  <button class="tab" onclick="showTab('palpites')">✏️ Palpitar</button>
+  <button class="tab" onclick="showTab('reg')">📋 Regras</button>
+</div>
+
+<div id="tab-ranking" class="section active">
+  <div class="ranking-list" id="rankingList"><div class="loading">Calculando...</div></div>
+</div>
+
+<div id="tab-jogos" class="section">
+  <div class="refresh-row">
+    <span>Resultados</span>
+    <button class="refresh-btn" onclick="loadJogos()">↻ Atualizar</button>
+  </div>
+  <div id="jogosList"><div class="loading">Buscando jogos...</div></div>
+</div>
+
+<div id="tab-palpites" class="section">
+  <div class="input-group">
+    <label>Participante</label>
+    <select id="participanteSel" onchange="renderPalpiteForm()">
+      <option value="XANDINHO">Xandinho</option>
+      <option value="GILMAR">Gilmar</option>
+      <option value="MARINELLI">Marinelli</option>
+      <option value="PAULINHO">Paulinho</option>
+      <option value="JC">JC</option>
+    </select>
+  </div>
+  <div class="obs-strip">🔒 Apostas encerram automaticamente 30 min antes de cada jogo.</div>
+  <div id="palpiteFormArea"><div class="loading">Carregando jogos...</div></div>
+</div>
+
+<div id="tab-reg" class="section">
+  <div class="reg-card">
+    <div class="reg-row"><span class="reg-fase">1ª fase</span><span class="reg-info">Exato <span class="reg-pts">2pts</span> · Vencedor <span class="reg-pts">1pt</span></span></div>
+    <div class="reg-row"><span class="reg-fase">2ª fase</span><span class="reg-info">Exato <span class="reg-pts">3pts</span></span></div>
+    <div class="reg-row"><span class="reg-fase">Oitavas de final</span><span class="reg-info">Exato <span class="reg-pts">4pts</span></span></div>
+    <div class="reg-row"><span class="reg-fase">Quartas de final</span><span class="reg-info">Exato <span class="reg-pts">5pts</span></span></div>
+    <div class="reg-row"><span class="reg-fase">Semifinal</span><span class="reg-info">Exato <span class="reg-pts">8pts</span></span></div>
+    <div class="reg-row"><span class="reg-fase">Final</span><span class="reg-info">Exato <span class="reg-pts">10pts</span></span></div>
+  </div>
+  <div class="obs-card">⏱️ Apostas encerram 30 minutos antes do início de cada partida.</div>
+  <div class="obs-card">⚠️ A partir da 2ª fase, considera-se apenas o resultado do tempo normal (90 minutos). Prorrogação e pênaltis não contam para o placar.</div>
+</div>
+
+<script>
+const PARTICIPANTES = ['XANDINHO','GILMAR','MARINELLI','PAULINHO','JC'];
+const AV = {
+  XANDINHO: {bg:'#1a1040', c:'#a78bfa'},
+  GILMAR:   {bg:'#0a2010', c:'#4ade80'},
+  MARINELLI:{bg:'#1a0a0a', c:'#f87171'},
+  PAULINHO: {bg:'#0a1020', c:'#60a5fa'},
+  JC:       {bg:'#1a1000', c:'#fbbf24'}
+};
+const PTS_EX = {'1ª fase':2,'2ª fase':3,'Oitavas':4,'Quartas':5,'Semifinal':8,'Final':10};
+const PTS_WIN = {'1ª fase':1};
+
+let palpitesData = {};
+let jogosData = [];
+let cdIntervals = [];
+
+function calcPts(fase, pg1, pg2, rg1, rg2) {
+  if (pg1===rg1 && pg2===rg2) return PTS_EX[fase]||2;
+  if (PTS_WIN[fase]) {
+    const v = x => x>0?1:x<0?-1:0;
+    if (v(pg1-pg2)===v(rg1-rg2)) return PTS_WIN[fase];
+  }
+  return 0;
+}
+
+function savePal() { try { localStorage.setItem('mechuo_v3', JSON.stringify(palpitesData)); } catch(e){} }
+function loadPal() { try { const d=localStorage.getItem('mechuo_v3'); if(d) palpitesData=JSON.parse(d); } catch(e){} }
+
+function showTab(t) {
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  ['ranking','jogos','palpites','reg'].forEach((n,i)=>{
+    if(n===t){ document.querySelectorAll('.tab')[i].classList.add('active'); document.getElementById('tab-'+n).classList.add('active'); }
+  });
+  if(t==='jogos') loadJogos();
+  if(t==='palpites') renderPalpiteForm();
+  if(t==='ranking') renderRanking();
+}
+
+function parseKickoff(dataStr, horaStr) {
+  if(!dataStr||!horaStr) return null;
+  try {
+    const [d,m] = dataStr.split('/').map(Number);
+    const [h,mi] = horaStr.split(':').map(Number);
+    return Date.UTC(2026, m-1, d, h+3, mi, 0);
+  } catch(e){ return null; }
+}
+
+function isBloqueado(j) {
+  if(j.status==='finalizado'||j.status==='ao_vivo') return true;
+  const kick = parseKickoff(j.data, j.hora);
+  if(!kick) return false;
+  return Date.now() >= (kick - 30*60*1000);
+}
+
+function msParaBloqueio(j) {
+  const kick = parseKickoff(j.data, j.hora);
+  if(!kick) return null;
+  return (kick - 30*60*1000) - Date.now();
+}
+
+async function loadJogos() {
+  document.getElementById('jogosList').innerHTML = '<div class="loading">↻ Buscando resultados...</div>';
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 2000,
+        tools: [{"type":"web_search_20250305","name":"web_search"}],
+        messages: [{role:'user', content:`Liste os jogos da Copa do Mundo FIFA 2026 disputados e próximos (máx 20). Responda SOMENTE JSON sem markdown:
+{"jogos":[{"data":"DD/MM","hora":"HH:MM","time1":"País","time2":"País","gol1":N_ou_null,"gol2":N_ou_null,"status":"finalizado|ao_vivo|agendado","fase":"1ª fase|2ª fase|Oitavas|Quartas|Semifinal|Final"}],"ts":"HH:MM DD/MM"}
+Horários no fuso de Brasília (UTC-3). Inclua o campo "hora" com o horário local de início.`}]
+      })
+    });
+    const data = await resp.json();
+    const text = data.content.filter(b=>b.type==='text').map(b=>b.text).join('');
+    const clean = text.replace(/```json|```/g,'').trim();
+    const parsed = JSON.parse(clean);
+    jogosData = parsed.jogos||[];
+    document.getElementById('lastUpdate').textContent = parsed.ts||'agora';
+    document.getElementById('statusDot').className = 'dot';
+  } catch(e) {
+    jogosData = getDemoJogos();
+    document.getElementById('lastUpdate').textContent = 'demo';
+    document.getElementById('statusDot').className = 'dot warn';
+  }
+  renderJogos();
+  renderRanking();
+  if(document.getElementById('tab-palpites').classList.contains('active')) renderPalpiteForm();
+}
+
+function getDemoJogos() {
+  const now = new Date();
+  const add = min => { const d=new Date(now.getTime()+min*60000); return {data:`${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}`,hora:`${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`}; };
+  const em20=add(20), em120=add(120), em360=add(360);
+  return [
+    {data:'11/06',hora:'14:00',time1:'México',time2:'Canadá',gol1:2,gol2:1,status:'finalizado',fase:'1ª fase'},
+    {data:'11/06',hora:'17:00',time1:'Brasil',time2:'Croácia',gol1:1,gol2:1,status:'finalizado',fase:'1ª fase'},
+    {data:em20.data,hora:em20.hora,time1:'Argentina',time2:'Marrocos',gol1:null,gol2:null,status:'agendado',fase:'1ª fase'},
+    {data:em120.data,hora:em120.hora,time1:'Portugal',time2:'Espanha',gol1:null,gol2:null,status:'agendado',fase:'1ª fase'},
+    {data:em360.data,hora:em360.hora,time1:'França',time2:'Alemanha',gol1:null,gol2:null,status:'agendado',fase:'1ª fase'},
+  ];
+}
+
+function renderJogos() {
+  if(!jogosData.length){document.getElementById('jogosList').innerHTML='<div class="loading">Nenhum jogo encontrado.</div>';return;}
+  let html='';
+  jogosData.forEach((j,i)=>{
+    const fin=j.status==='finalizado', live=j.status==='ao_vivo';
+    const scoreHtml = fin
+      ? `<div class="jogo-score">${j.gol1} – ${j.gol2}</div>`
+      : live
+        ? `<div class="jogo-score live-score">${j.gol1??0} – ${j.gol2??0}</div>`
+        : `<div class="jogo-score vs">vs</div>`;
+    let palsHtml='';
+    if(fin){
+      palsHtml='<div class="pals-grid">';
+      PARTICIPANTES.forEach(p=>{
+        const pal=(palpitesData[p]||{})[i];
+        if(pal!==undefined){
+          const pts=calcPts(j.fase,pal.g1,pal.g2,j.gol1,j.gol2);
+          const cls=pts===(PTS_EX[j.fase]||2)?'pal-exact':pts>0?'pal-winner':'pal-miss';
+          palsHtml+=`<div class="pal-row"><span>${cap(p)}</span><span class="pal-score ${cls}">${pal.g1}-${pal.g2} <span style="font-size:10px;font-weight:400">(${pts}pt)</span></span></div>`;
+        }
+      });
+      palsHtml+='</div>';
+    }
+    const liveTag=live?'<span class="live-badge">● AO VIVO</span>':'';
+    html+=`<div class="jogo-card">
+      <div class="jogo-head"><span>${j.data||''} ${j.hora||''} ${liveTag}</span><span class="fase-pill">${j.fase||'1ª fase'}</span></div>
+      <div class="jogo-body">
+        <div class="jogo-teams">
+          <span class="jogo-time">${j.time1}</span>
+          ${scoreHtml}
+          <span class="jogo-time right">${j.time2}</span>
+        </div>
+        ${palsHtml}
+      </div>
+    </div>`;
+  });
+  document.getElementById('jogosList').innerHTML=html;
+}
+
+function renderRanking() {
+  const scores = PARTICIPANTES.map(p=>{
+    let pts=0,exact=0,win=0,total=0;
+    jogosData.forEach((j,i)=>{
+      if(j.status!=='finalizado') return;
+      const pal=(palpitesData[p]||{})[i];
+      if(pal===undefined) return;
+      total++;
+      const p2=calcPts(j.fase,pal.g1,pal.g2,j.gol1,j.gol2);
+      pts+=p2;
+      if(p2===(PTS_EX[j.fase]||2)) exact++;
+      else if(p2>0) win++;
+    });
+    const palTotal=Object.keys(palpitesData[p]||{}).length;
+    return{name:p,pts,exact,win,total,palTotal};
+  }).sort((a,b)=>b.pts-a.pts);
+
+  let html='<div class="ranking-list">';
+  scores.forEach((s,i)=>{
+    const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':`${i+1}º`;
+    const av=AV[s.name]||{bg:'#111',c:'#888'};
+    const detail=[s.exact?`${s.exact} exato${s.exact>1?'s':''}`:null, s.win?`${s.win} vencedor${s.win>1?'es':''}`:null, `${s.palTotal} palpite${s.palTotal!==1?'s':''}`].filter(Boolean).join(' · ');
+    html+=`<div class="rank-card${i===0?' primeiro':''}">
+      <span class="rank-medal">${medal}</span>
+      <div class="rank-avatar" style="background:${av.bg};color:${av.c}">${s.name.slice(0,2)}</div>
+      <div class="rank-info">
+        <div class="rank-name">${cap(s.name)}</div>
+        <div class="rank-detail">${detail}</div>
+      </div>
+      <div class="rank-pts">
+        <div class="rank-pts-num">${s.pts}</div>
+        <div class="rank-pts-label">PTS</div>
+      </div>
+    </div>`;
+  });
+  html+='</div>';
+  document.getElementById('rankingList').innerHTML=html;
+}
+
+function renderPalpiteForm() {
+  cdIntervals.forEach(clearInterval);
+  cdIntervals=[];
+  const p=document.getElementById('participanteSel').value;
+  if(!jogosData.length){
+    document.getElementById('palpiteFormArea').innerHTML='<div class="loading">Carregue os jogos primeiro na aba ⚽ Jogos.</div>';return;
+  }
+  let html='';
+  let lastFase='';
+  jogosData.forEach((j,i)=>{
+    const pal=(palpitesData[p]||{})[i]||{g1:'',g2:''};
+    const bloq=isBloqueado(j);
+    const fin=j.status==='finalizado';
+    const fase=j.fase||'1ª fase';
+    const ptInfo=PTS_EX[fase]||2;
+    const winInfo=PTS_WIN[fase]?` · vencedor +${PTS_WIN[fase]}pt`:'';
+    if(fase!==lastFase){
+      html+=`<div class="fase-sep">${fase} — exato ${ptInfo}pt${winInfo}</div>`;
+      lastFase=fase;
+    }
+    const statusTag = fin
+      ? `<div class="status-tag tag-fechado">🔒 Jogo encerrado</div>`
+      : bloq
+        ? `<div class="status-tag tag-fechado">🔒 Apostas encerradas</div>`
+        : `<div class="status-tag tag-aberto" id="tag_${i}">🟢 Aberto · fecha em <span class="countdown" id="cd_${i}">--:--</span></div>`;
+    html+=`<div class="pal-card${bloq?' bloqueado':''}" id="palcard_${i}">
+      <div class="pal-match">
+        <span class="pal-match-time">${j.time1} × ${j.time2}</span>
+        <span class="pal-match-hora">${j.data||''} ${j.hora||''}</span>
+      </div>
+      <div class="score-row">
+        <input type="number" class="score-inp" id="pg_${i}_1" min="0" max="20" value="${pal.g1}" placeholder="0" ${bloq?'disabled':''}>
+        <span class="score-sep">–</span>
+        <input type="number" class="score-inp" id="pg_${i}_2" min="0" max="20" value="${pal.g2}" placeholder="0" ${bloq?'disabled':''}>
+      </div>
+      ${!bloq?`<button class="salvar-btn" id="btn_${i}" onclick="salvar('${p}',${i})">Salvar palpite</button><div class="saved-ok" id="sv_${i}">✓ Palpite salvo!</div>`:''}
+      ${statusTag}
+    </div>`;
+  });
+  document.getElementById('palpiteFormArea').innerHTML=html;
+
+  jogosData.forEach((j,i)=>{
+    if(isBloqueado(j)) return;
+    const tick=()=>{
+      const diff=msParaBloqueio(j);
+      const cdEl=document.getElementById(`cd_${i}`);
+      const tagEl=document.getElementById(`tag_${i}`);
+      if(!cdEl) return;
+      if(diff===null){cdEl.textContent='--:--';return;}
+      if(diff<=0){
+        const card=document.getElementById(`palcard_${i}`);
+        if(card){ card.classList.add('bloqueado'); }
+        const i1=document.getElementById(`pg_${i}_1`), i2=document.getElementById(`pg_${i}_2`), btn=document.getElementById(`btn_${i}`);
+        if(i1) i1.disabled=true;
+        if(i2) i2.disabled=true;
+        if(btn) btn.remove();
+        if(tagEl) tagEl.outerHTML=`<div class="status-tag tag-fechado">🔒 Apostas encerradas</div>`;
+        return;
+      }
+      if(diff<60*60*1000&&tagEl&&tagEl.classList.contains('tag-aberto')){
+        tagEl.classList.remove('tag-aberto'); tagEl.classList.add('tag-quase');
+        tagEl.innerHTML=`⚠️ Fecha em <span class="countdown" id="cd_${i}">--:--</span>`;
+      }
+      const el=document.getElementById(`cd_${i}`);
+      if(!el) return;
+      const tot=Math.floor(diff/1000);
+      const h=Math.floor(tot/3600), m=Math.floor((tot%3600)/60), s=tot%60;
+      el.textContent=h>0?`${h}h${String(m).padStart(2,'0')}m`:`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    };
+    tick();
+    cdIntervals.push(setInterval(tick,1000));
+  });
+}
+
+function salvar(p,i){
+  if(isBloqueado(jogosData[i])) return;
+  const g1=parseInt(document.getElementById(`pg_${i}_1`).value);
+  const g2=parseInt(document.getElementById(`pg_${i}_2`).value);
+  if(isNaN(g1)||isNaN(g2)) return;
+  if(!palpitesData[p]) palpitesData[p]={};
+  palpitesData[p][i]={g1,g2};
+  savePal();
+  const el=document.getElementById(`sv_${i}`);
+  if(el){el.style.display='block';setTimeout(()=>el.style.display='none',2000);}
+  renderRanking();
+}
+
+function cap(s){ return s.charAt(0)+s.slice(1).toLowerCase(); }
+
+loadPal();
+renderRanking();
+loadJogos();
+</script>
+</body>
+</html>
